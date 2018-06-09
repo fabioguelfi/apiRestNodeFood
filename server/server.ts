@@ -1,35 +1,44 @@
 import { enviroment } from "./../common/enviroment";
-import * as restify from "restify";
 import { Router } from "../common/router";
-
+import * as mongoose from "mongoose";
+import * as restify from "restify";
 export class Server {
-    application: restify.Server;
+  application: restify.Server;
 
-    initRoutes(routers: Router[]): Promise<any> {
-        return new Promise((resolve, reject) => {
-            try {
-                this.application = restify.createServer({
-                    name: "meat-api",
-                    version: "1.0.0"
-                });
+  initializeDb(): mongoose.MongooseThenable {
+    (<any>mongoose).Promise = global.Promise;
+    return mongoose.connect(enviroment.db.url, {
+      useMongoClient: true
+    });
+  }
 
-                this.application.use(restify.plugins.queryParser());
-
-                // routes
-                for (let router of routers) {
-                    router.applyRoutes(this.application);
-                }
-
-                this.application.listen(enviroment.server.port, () => {
-                    resolve(this.application);
-                });
-            } catch (error) {
-                reject(error);
-            }
+  initRoutes(routers: Router[]): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.application = restify.createServer({
+          name: "meat-api",
+          version: "1.0.0"
         });
-    }
 
-    bootstrap(routers: Router[] = []): Promise<Server> {
-        return this.initRoutes(routers).then(() => this);
-    }
+        this.application.use(restify.plugins.queryParser());
+
+        // routes
+        for (let router of routers) {
+          router.applyRoutes(this.application);
+        }
+
+        this.application.listen(enviroment.server.port, () => {
+          resolve(this.application);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  bootstrap(routers: Router[] = []): Promise<Server> {
+    return this.initializeDb().then(() => {
+     return this.initRoutes(routers).then(() => this);
+    });
+  }
 }

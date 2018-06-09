@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/fabioguelfi/apiRestNodeFood#readme",
   "dependencies": {
+    "@types/mongoose": "4.7.32",
     "@types/restify": "^5.0.6",
+    "mongoose": "4.13.9",
     "restify": "6.3.4"
   }
 }
