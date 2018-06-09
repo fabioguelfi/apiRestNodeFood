@@ -5,11 +5,21 @@ const server = restify.createServer({
     version: '1.0.0',
 });
 
-server.get('/hello', (req, res, next) => {
+server.use(restify.plugins.queryParser())
 
-    res.json({ message: 'hello world' })
+server.get('/info', [(req, resp, next) => {
+    return next()
+}, (req, resp, next) => {
+    resp.json({
+        browser: req.userAgent(),
+        method: req.method,
+        url: req.url,
+        path: req.path(),
+        query: req.query
+    });
+
     return next();
-});
+}]);
 
 server.listen(3000, () => {
     console.log('api is running on http://localhost:3000')
