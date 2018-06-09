@@ -1,3 +1,4 @@
+import { handleError } from './error.handler';
 import { enviroment } from "./../common/enviroment";
 import { Router } from "../common/router";
 import * as mongoose from "mongoose";
@@ -31,6 +32,9 @@ export class Server {
                 this.application.listen(enviroment.server.port, () => {
                     resolve(this.application);
                 });
+
+                this.application.on('restifyError', handleError)
+
             } catch (error) {
                 reject(error);
             }
