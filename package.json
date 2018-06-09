@@ -1,0 +1,23 @@
+{
+  "name": "apinode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabioguelfi/apiRestNodeFood.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fabioguelfi/apiRestNodeFood/issues"
+  },
+  "homepage": "https://github.com/fabioguelfi/apiRestNodeFood#readme",
+  "dependencies": {
+    "@types/restify": "^5.0.6",
+    "restify": "6.3.4"
+  }
+}
