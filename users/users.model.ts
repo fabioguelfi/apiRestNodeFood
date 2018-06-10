@@ -1,6 +1,7 @@
-import { validateCPF } from './../common/validators';
+import { enviroment } from "./../common/enviroment";
+import { validateCPF } from "./../common/validators";
 import * as mongoose from "mongoose";
-
+import * as bcrypt from "bcrypt";
 export interface User extends mongoose.Document {
     name: string;
     email: string;
@@ -12,7 +13,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         maxlength: 80,
-        minlength: 3,
+        minlength: 3
     },
     email: {
         type: String,
@@ -23,20 +24,33 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         select: false,
-        required: true,
+        required: true
     },
     gender: {
         type: String,
         required: false,
-        enum: ['Male', 'Female']
+        enum: ["Male", "Female"]
     },
     cpf: {
         type: String,
         required: false,
         validate: {
             validator: validateCPF,
-            message: '{PATH}: Invalid CPF ({VALUE})'
+            message: "{PATH}: Invalid CPF ({VALUE})"
         }
+    }
+});
+
+userSchema.pre("save", function (next) {
+    const user: User = this;
+    if (!user.isModified("password")) {
+        next();
+    } else {
+        bcrypt.hash(user.password, enviroment.security.saltRounds)
+            .then(hash => {
+                user.password = hash;
+                next();
+            }).catch(next)
     }
 });
 
